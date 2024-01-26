@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+rec_key=$(cat <<EOF
+-----BEGIN CRYPT4GH PUBLIC KEY-----
+SUtKgXbC5tBCzM69wvGvFl5qY5OR/+20s5ZyNSebRFw=
+-----END CRYPT4GH PUBLIC KEY----
+EOF
+)
+
+if [ $# -ne 3 ] || [ "${1}" != "--dest" ]
+then
+   echo "USAGE ${0} --dest <output_folder> <input_file>"
+   exit 1
+fi
+
+dest="${2}"
+input_fn="${3}"
+path_cmp="$(dirname "${input_fn}")"
+output_fn="${dest}/${input_fn}"
+
+mkdir -p "${dest}/${path_cmp}"
+crypt4gh encrypt --recipient_pk <(echo "${rec_key}") < "${input_fn}" > "${output_fn}.c4gh"
